@@ -1,1 +1,86 @@
+import random
 
+def play_again() -> bool: #Function if user want to play again or not
+    print()
+    while True:                                             # This loop will run until break function or a return function
+        want_to_play = input('Do you want to play again? ==>').lower() #User answer will be all lower-case
+        if want_to_play == 'yes' or want_to_play == 'y':    #if the user enter Y,y,YEs this will return True for the function
+            return True                                                 
+        elif want_to_play == 'no' or want_to_play == 'n':
+            return False                                    #if the user enter N,n,nO this will return False for the function
+        else:
+            print('You must enter Y/YES/N/NO to continue.  Please try again')
+            continue                                        #Continue asking the user to play
+        
+def get_wager() -> int:#Function to calculate the bet that they want to put-in can not more than the bank
+    print()
+    while True:         #Infinity loop until it return or break function
+        chips = int(input('How many chips do you want to wager? ==>'))    #Ask the user
+        if 0< chips <= bank:    #Can not bet negative number or higher than in the bank
+            return chips
+        elif chips < 1:
+            print('Your wage must be greater than 0. Try again!.')
+            continue            #Continue aski8ng if not qualify
+        else:
+            print(f'Your wage cannot be greater than how much you have in the bank. {bank}')
+            continue            #Continue aski8ng if not qualify
+        
+def get_slot_results() -> tuple:
+    reel1 = random.randint(0,9) #Get random number from 0 to 9
+    reel2 = random.randint(0,9)
+    reel3 = random.randint(0,9)
+    print(f'Your spin{reel1, reel2, reel3}')
+    return reel1,reel2,reel3
+    
+def get_matches(reela, reelb, reelc) -> int:
+    if reela == reelb == reelc:             #All the random number match will return 3
+        print('You matched 3 reels')
+        return 3
+    elif reela == reelb or reelb == reelc or reela == reelc:    #2/3 the random number match will return 2
+        print('You matched 2 reels')
+        return 2
+    else:
+        print('You matched 0 reels')        # else will return 0
+        return 0
+    
+def get_bank() -> int:      #Function ask the user how much money they want
+    while True:             #Loop
+        bank = int(input('How many chips do you want to start with?==>'))
+        if 0 < bank <= 101:             #can not be lesss ran 0 or more than 101 will return bank
+            return bank
+        else:                         # print the staement and ask again (infinity loop)
+            print('Must be greater than 0 and less than 101, (0-101), Please try again!')
+    
+def get_payout(wager, matches):         #Function calculate the money win 
+    if matches ==3:
+        print(f'You won/lost {wager*10-wager}')     # 3 match will x10 the bet 
+        return wager*10-wager
+    elif matches == 2:
+        print(f'You won/lost {wager*3-wager}')       # 2 match will x3 the bet
+        return wager*3-wager
+    else:
+        print(f'You won/lost {wager*-1}')           # 0 match will - their money
+        return wager*-1
+
+if __name__=="__main__":
+    play_more = True                                # This loop if they want to play more again again and again
+    while play_more:
+        bank = get_bank()                           #set up varible
+        Money_start = bank                          #set up varible the money that they start with
+        count = 0                                   # set up varible that count how many time they play (turn)
+        while True:
+            Most_money = bank                           #set up varible to count most money ever have
+            bet = get_wager()                           #add value to the function get_wager()
+            reel1,reel2,reel3 = get_slot_results()      #add value to the function get_slot_results()
+            matches = get_matches(reel1,reel2,reel3)    #just container
+            payout = get_payout(bet, matches)           #add value to the function get_payout() and contain itby different varible
+            bank = bank+payout                          #Money that already win or loss
+            print(f'Current bank {bank}')
+            count = count + 1                           # each loop count 1
+            if Most_money < bank:                       # set up varible to count the most money that have
+                Most_money = bank
+            if bank <= 0:                               # run out of money then quit 
+                break
+        print(f'You lost all {Money_start} in {count} spins')
+        print(f'The most chips you had was {Most_money}')
+        play_more = play_again()                        #Function ask the user to play again
